@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para la persona más especial del Universo akicita ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- VARIABLES DE DISEÑO (Paleta Premium Dark & Pastel) --- */
+        :root {
+            --bg-deep: #050505;
+            --bg-card: rgba(18, 18, 18, 0.7);
+            --border-glow: rgba(255, 255, 255, 0.1);
+            --melody-pink: #ffb7c5;
+            --kuromi-purple: #b388ff;
+            --cosmic-gold: #e5c158;
+            --text-pure: #ffffff;
+            --text-muted: #b3b3b3;
+            --font-title: 'Cinzel', serif;
+            --font-body: 'Montserrat', sans-serif;
+            --font-poem: 'Playfair Display', serif;
+        }
+
+        /* --- ESTILOS BASE Y RESET --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg-deep);
+            color: var(--text-pure);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Ocultar barra de scroll pero mantener funcionalidad */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        /* --- FONDO CÓSMICO DE ESTRELLAS --- */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- PANTALLA DE BIENVENIDA (INTRO REVELADORA) --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.5s;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #intro-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-btn {
+            background: transparent;
+            color: var(--text-pure);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 18px 36px;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        .intro-btn:hover {
+            border-color: var(--melody-pink);
+            box-shadow: 0 0 25px rgba(255, 183, 197, 0.3);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .intro-subtext {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: 200;
+            animation: pulse 3s infinite;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (REVELADO POST-INTRO) --- */
+        #main-content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 2s ease, transform 2s ease;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        #main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SECCIONES PRINCIPALES --- */
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .main-title {
+            font-family: var(--font-title);
+            font-size: 3rem;
+            font-weight: 400;
+            letter-spacing: 6px;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--text-pure), var(--melody-pink), var(--kuromi-purple), var(--cosmic-gold));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        .date-badge {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: var(--cosmic-gold);
+            text-transform: uppercase;
+        }
+
+        /* --- TARJETAS NARRATIVAS (SCROLL REVEAL) --- */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            margin-bottom: 100px;
+        }
+
+        .reveal-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 50px 40px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* Variaciones sutiles de bordes iluminados */
+        .card-melody { border-left: 3px solid var(--melody-pink); }
+        .card-kuromi { border-right: 3px solid var(--kuromi-purple); }
+        .card-cosmic { border-top: 2px solid var(--cosmic-gold); }
+
+        /* --- TEXTO DE LA CARTA (PROSA LARGA) --- */
+        .letter-p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 25px;
+            text-align: justify;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .letter-p::first-letter {
+            font-family: var(--font-title);
+            font-size: 1.8rem;
+            color: var(--cosmic-gold);
+            font-weight: bold;
+            margin-right: 2px;
+        }
+
+        /* --- SECCIÓN DE POEMAS --- */
+        .poem-container {
+            text-align: center;
+            font-family: var(--font-poem);
+            font-size: 1.25rem;
+            line-height: 2;
+            font-style: italic;
+            color: #f0f0f0;
+            padding: 30px 0;
+            position: relative;
+        }
+
+        .poem-stanza {
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .poem-divider {
+            width: 50px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cosmic-gold), transparent);
+            margin: 40px auto;
+        }
+
+        /* --- GALERÍA DE IMÁGENES ESTÉTICA --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            aspect-ratio: 4 / 5;
+            background-color: #111;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: grayscale(15%) brightness(90%);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%) brightness(100%);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: var(--text-pure);
+            font-weight: 300;
+        }
+
+        /* Destacar una tarjeta en la cuadrícula */
+        .grid-span-2 {
+            grid-column: span 2;
+            aspect-ratio: 16 / 9;
+        }
+
+        /* --- FOOTER DESPEDIDA --- */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            font-family: var(--font-title);
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 50px;
+        }
+
+        footer span {
+            color: var(--melody-pink);
+            animation: pulse 1.5s infinite;
+            display: inline-block;
+        }
+
+        /* --- ANIMACIONES KEYFRAMES --- */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- RESPONSIVIDAD (MOBILE OPTIMIZATION) --- */
+        @media (max-width: 768px) {
+            .main-title { font-size: 2.1rem; letter-spacing: 3px; }
+            .content-card { padding: 35px 20px; }
+            .gallery-grid { grid-template-columns: 1fr; gap: 20px; }
+            .grid-span-2 { grid-column: span 1; aspect-ratio: 4 / 5; }
+            .letter-p { font-size: 0.95rem; line-height: 1.8; text-align: left; }
+            .poem-container { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <div id="intro-overlay">
+        <button class="intro-btn" onclick="revealUniverse()">Para la persona más especial del universo...</button>
+        <p class="intro-subtext">HAZ CLIC AQUÍ</p>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <p class="date-badge">A las doce en punto en el cosmos</p>
+            <h1 class="main-title">Feliz Cumpleaños</h1>
+        </header>
+
+        <section class="reveal-section">
+            <div class="content-card card-melody">
+                <p class="letter-p">Hoy el universo se detiene por un instante para celebrar el momento exacto en el que tu luz comenzó a formar parte de este plano. Quiero que sepas, desde lo más profundo de mi ser, lo inmenso y absoluto que es lo que siento por ti. No existen palabras cotidianas que alcancen a describir la magnitud de este lazo, porque quererte de la forma en que te quiero se ha convertido en una constante inalterable de mi realidad.</p>
+                <p class="letter-p">La confianza que tengo depositada en ti es ciega, pura y transparente; es la certeza absoluta de saber que en medio del caos del mundo, tú eres mi refugio más seguro. Eres esa persona por la que daría absolutamente todo sin dudarlo un solo segundo. Mi lealtad hacia ti no conoce límites, distancias ni condiciones; estaré a tu lado protegiendo tu camino, celebrando tus victorias y sosteniéndote con firmeza cuando el viento sople fuerte.</p>
+                <p class="letter-p">Tu presencia le da un orden perfecto a mi propio desorden. Confiar en ti ha sido el acto más natural y hermoso que he experimentado, y es un recordatorio constante de que las conexiones verdaderas y eternas no se fuerzan: simplemente existen y brillan con fuerza propia.</p>
+            </div>
+        </section>
+
+        <section class="reveal-section">
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKgJUJQKzswUtWPLDK2BESouTGr3HaEEqRMw&s" alt="Gatito tierno">
+                    <div class="gallery-caption">Un recordatorio de lo dulce que eres.</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600" alt="Perrito tierno">
+                    <div class="gallery-caption">Lealtad y ternura pura, como tú.</div>
+                </div>
+                <div class="gallery-item grid-span-2">
+                    <img src="https://images.unsplash.com/photo-1559251606-c623743a6d76?auto=format&fit=crop&q=80&w=1000" alt="Peluches tiernos">
+                    <div class="gallery-caption">Cosas suaves y hermosas que me recuerdan a tu calidez.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal-section">
+            <div class="content-card card-cosmic">
+                <div class="poem-container">
+                    <div class="poem-stanza">
+                        "Si el universo es un lienzo de vacío y de neón,<br>
+                        tú eres la estrella que alteró mi gravedad.<br>
+                        No hay agujero negro que devore esta emoción,<br>
+                        ni galaxia que opaque tu profunda claridad."
+                    </div>
+                    
+                    <div class="poem-divider"></div>
+                    
+                    <div class="poem-stanza">
+                        "Te comparo con el cosmos porque expandes mi existir,<br>
+                        colisionas en mis noches con destellos de cristal.<br>
+                        Y si el tiempo es relativo cuando te veo sonreír,<br>
+                        un segundo de tu luz se vuelve eterno e inmortal."
+                    </div>
+                </div>
+                <p class="letter-p" style="margin-top: 30px;">Cuando hablo de tu belleza, no me refiero únicamente a lo perfectamente simétrico y deslumbrante de tus rasgos, sino a la luz invisible que irradias a cada paso. Tu belleza es como un fenómeno astronómico extraño y precioso; una radiación de fondo que llena todo espacio vacío, convirtiendo lo ordinario en algo extraordinario. Tienes una magia singular que calma tormentas internas y enciende constelaciones enteras en la mente de quien tiene la inmensa fortuna de conocerte de verdad.</p>
+            </div>
+        </section>
+
+        <section class="reveal-section">
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://i.pinimg.com/7364x/4c/80/77/4c80775836f33222db2e67a6d89b4f74.jpg" alt="My Melody and Kuromi">
+                    <div class="gallery-caption">El balance perfecto entre lo dulce y lo misterioso.</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.pinimg.com/7364x/27/15/8e/27158ec53ee1da9d87dbfc60a0f44bc1.jpg" alt="Meliodas y Elizabeth">
+                    <div class="gallery-caption">Un amor que desafía maldiciones a través del tiempo.</div>
+                </div>
+                <div class="gallery-item grid-span-2">
+                    <img src="https://i.pinimg.com/7364x/00/fa/87/00fa87178cf18073ea41fe8da66383a1.jpg" alt="Jujutsu Kaisen Aesthetic">
+                    <div class="gallery-caption">Fuerza, estilo y elegancia en la oscuridad.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal-section">
+            <div class="content-card card-kuromi">
+                <p class="letter-p">Gracias por existir, por regalarle al mundo la oportunidad de albergar a alguien tan genuina, fuerte y encantadora. Que este año que inicias venga lleno de galaxias por descubrir, de metas cumplidas y de instantes felices. Recuerda siempre que, sin importar la distancia, el tiempo o los giros que dé la vida, cuentas conmigo de una manera inquebrantable.</p>
+                <p class="letter-p" style="text-align: center; font-family: var(--font-title); color: var(--cosmic-gold); font-size: 1.2rem; margin-top: 20px;">
+                    Feliz cumpleaños a mi persona favorita del universo entero. 🖤
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            Hecho con <span>♥</span> para ti en tu día especial.
+        </footer>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURACIÓN DEL CANVAS (FONDO DE ESTRELLAS) ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        let stars = [];
+        const numStars = 150;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5;
+                this.speedY = Math.random() * 0.2 + 0.05; // Caída lenta cósmica
+                this.blinkSpeed = Math.random() * 0.02 + 0.005;
+                this.alpha = Math.random();
+                this.growing = true;
+            }
+
+            update() {
+                // Caída suave vertical
+                this.y += this.speedY;
+                if (this.y > canvas.height) {
+                    this.y = 0;
+                    this.x = Math.random() * canvas.width;
+                }
+
+                // Efecto de parpadeo (brillo sutil)
+                if (this.growing) {
+                    this.alpha += this.blinkSpeed;
+                    if (this.alpha >= 1) this.growing = false;
+                } else {
+                    this.alpha -= this.blinkSpeed;
+                    if (this.alpha <= 0.2) this.growing = true;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initStars();
+        });
+
+        // Inicializar al cargar la ventana
+        resizeCanvas();
+        initStars();
+        animateStars();
+
+
+        // --- 2. LOGICA DE REVELADO (INTRO Y CONFETI) ---
+        function revealUniverse() {
+            // Desvanecer capa de bienvenida
+            const overlay = document.getElementById('intro-overlay');
+            overlay.classList.add('fade-out');
+
+            // Mostrar el contenedor principal de forma fluida
+            const mainContent = document.getElementById('main-content');
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                // Disparar primer efecto de scroll para activar la primera sección inmediatamente
+                handleScrollReveal();
+            }, 500);
+
+            // Explosión mágica de confeti (Estrellas y corazones en tonos pastel)
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.8 },
+                    colors: ['#ffb7c5', '#b388ff', '#e5c158', '#ffffff']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.8 },
+                    colors: ['#ffb7c5', '#b388ff', '#e5c158', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+
+        // --- 3. EFECTO SCROLL REVEAL (ELEGANCIA AL DESPLAZARSE) ---
+        const sections = document.querySelectorAll('.reveal-section');
+
+        function handleScrollReveal() {
+            const triggerBottom = window.innerHeight * 0.85;
+
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+
+                if (sectionTop < triggerBottom) {
+                    section.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScrollReveal);
+    </script>
+</body>
+</html>
